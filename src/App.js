@@ -16,10 +16,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { result: null, searchTerm: DEFAULT_QUERY };
+    this.state = {
+      result: null,
+      searchTerm: DEFAULT_QUERY,
+    };
+
     this.setSearchTopstories = this.setSearchTopstories.bind(this);
     this.fetchSearchTopstories = this.fetchSearchTopstories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
   }
 
@@ -38,34 +43,37 @@ class App extends Component {
     this.fetchSearchTopstories(searchTerm);
   }
 
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
+  }
+
+  onSearchSubmit(event) {
+    const { searchTerm } = this.state;
+    this.fetchSearchTopstories(searchTerm);
+    event.preventDefault();
+  }
+
   onDismiss(id) {
     const isNotId = (item) => item.objectID !== id;
     const updatedHits = this.state.result.hits.filter(isNotId);
     this.setState({ result: { ...this.state.result, hits: updatedHits } });
   }
 
-  onSearchChange(event) {
-    this.setState({ searchTerm: event.target.value });
-  }
-
   render() {
     const { searchTerm, result } = this.state;
-
     return (
       <div className="App">
         <div className="page">
           <div className="interactions">
-            <Search value={searchTerm} onChange={this.onSearchChange}>
+            <Search
+              value={searchTerm}
+              onChange={this.onSearchChange}
+              onSubmit={this.onSearchSubmit}
+            >
               Search
             </Search>
           </div>
-          {result && (
-            <Table
-              list={result.hits}
-              pattern={searchTerm}
-              onDismiss={this.onDismiss}
-            />
-          )}
+          {result && <Table list={result.hits} onDismiss={this.onDismiss} />}
         </div>
       </div>
     );

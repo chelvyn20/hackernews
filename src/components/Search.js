@@ -18,10 +18,11 @@
  * stateless function
  */
 const Search = (props) => {
-  const { value, onChange, children } = props;
+  const { value, onChange, onSubmit, children } = props;
   return (
-    <form>
-      {children} <input type="text" value={value} onChange={onChange} />
+    <form onSubmit={onSubmit}>
+      <input type="text" value={value} onChange={onChange} />
+      <button type="submit">{children}</button>
     </form>
   );
 };
