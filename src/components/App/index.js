@@ -1,20 +1,18 @@
 import { Component } from 'react';
-
-import { Search } from '../Search';
-import { Table } from '../Table';
-import { Button } from '../Button';
-
-import './index.css';
 import {
-  DEFAULT_QUERY,
-  DEFAULT_PAGE,
   DEFAULT_HPP,
+  DEFAULT_PAGE,
+  DEFAULT_QUERY,
+  PARAM_HPP,
+  PARAM_PAGE,
+  PARAM_SEARCH,
   PATH_BASE,
   PATH_SEARCH,
-  PARAM_SEARCH,
-  PARAM_PAGE,
-  PARAM_HPP,
 } from '../../constants';
+import { Button } from '../Button';
+import { Search } from '../Search';
+import { Table } from '../Table';
+import './index.css';
 
 class App extends Component {
   constructor(props) {
