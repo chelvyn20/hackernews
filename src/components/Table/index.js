@@ -1,3 +1,4 @@
+import { arrayOf, func, number, shape, string } from 'prop-types';
 import { Button } from '../Button';
 import './index.css';
 
@@ -29,6 +30,19 @@ const Table = (props) => {
       ))}
     </div>
   );
+};
+
+Table.propTypes = {
+  list: arrayOf(
+    shape({
+      objectID: string.isRequired,
+      author: string,
+      url: string,
+      num_comments: number,
+      points: number,
+    })
+  ).isRequired,
+  onDismiss: func.isRequired,
 };
 
 export { Table };

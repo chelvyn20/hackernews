@@ -49,12 +49,17 @@ class App extends Component {
     });
   }
 
-  fetchSearchTopstories(searchTerm, page) {
-    fetch(
-      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
-    )
-      .then((response) => response.json())
-      .then((result) => this.setSearchTopstories(result));
+  async fetchSearchTopstories(searchTerm, page) {
+    try {
+      const response = await fetch(
+        `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
+      );
+      const result = await response.json();
+      this.setSearchTopstories(result);
+    } catch (e) {
+      console.log(e.stack);
+      return null;
+    }
   }
 
   componentDidMount() {
