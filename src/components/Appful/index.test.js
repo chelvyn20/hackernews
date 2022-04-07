@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { act, create } from 'react-test-renderer';
+import { list } from '../../dummy/DummyData';
 import Appful from './index';
 
 describe('Appful', () => {
@@ -17,22 +18,7 @@ describe('Appful', () => {
 
   it('should render hits list', async () => {
     const fakeResult = {
-      hits: [
-        {
-          title: 'AAA',
-          author: 'Abc',
-          num_comments: 1,
-          points: 2,
-          objectID: 'abc0',
-        },
-        {
-          title: 'BBB',
-          author: 'Bcd',
-          num_comments: 2,
-          points: 3,
-          objectID: 'abc1',
-        },
-      ],
+      hits: list,
       page: 1,
     };
 

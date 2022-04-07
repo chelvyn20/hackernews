@@ -1,25 +1,10 @@
 import { createRoot } from 'react-dom/client';
-import { create, act } from 'react-test-renderer';
+import { act, create } from 'react-test-renderer';
 import { Table } from './index';
-
+import { list } from '../../dummy/DummyData';
 describe('Table Component', () => {
   const props = {
-    list: [
-      {
-        title: 'AAA',
-        author: 'Abc',
-        num_comments: 1,
-        points: 2,
-        objectID: 'abc0',
-      },
-      {
-        title: 'BBB',
-        author: 'Bcd',
-        num_comments: 2,
-        points: 3,
-        objectID: 'abc1',
-      },
-    ],
+    list: list,
     onDismiss: jest.fn(),
   };
 

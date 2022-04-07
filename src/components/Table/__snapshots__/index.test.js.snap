@@ -14,8 +14,10 @@ exports[`Table Component snapshots 1`] = `
         }
       }
     >
-      <a>
-        AAA
+      <a
+        href="https://facebook.github.io/react/"
+      >
+        React
       </a>
     </span>
     <span
@@ -26,7 +28,7 @@ exports[`Table Component snapshots 1`] = `
       }
     >
        
-      Abc
+      Jordan Walke
     </span>
     <span
       style={
@@ -36,7 +38,7 @@ exports[`Table Component snapshots 1`] = `
       }
     >
        
-      1
+      3
     </span>
     <span
       style={
@@ -46,7 +48,7 @@ exports[`Table Component snapshots 1`] = `
       }
     >
        
-      2
+      4
        
     </span>
     <span
@@ -75,8 +77,10 @@ exports[`Table Component snapshots 1`] = `
         }
       }
     >
-      <a>
-        BBB
+      <a
+        href="https://github.com/reactjs/redux"
+      >
+        Redux
       </a>
     </span>
     <span
@@ -87,7 +91,7 @@ exports[`Table Component snapshots 1`] = `
       }
     >
        
-      Bcd
+      Dan Abramov, Andrew Clark
     </span>
     <span
       style={
@@ -107,7 +111,7 @@ exports[`Table Component snapshots 1`] = `
       }
     >
        
-      3
+      5
        
     </span>
     <span
