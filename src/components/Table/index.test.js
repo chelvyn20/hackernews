@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import { act, create } from 'react-test-renderer';
 import { Table } from './index';
-import { list } from '../../dummy/DummyData';
+import { dummyList } from '../../dummy/DummyData';
 describe('Table Component', () => {
   const props = {
-    list: list,
+    list: dummyList,
     onDismiss: jest.fn(),
   };
 

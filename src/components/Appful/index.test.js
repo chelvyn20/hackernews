@@ -1,9 +1,14 @@
 import { createRoot } from 'react-dom/client';
 import { act, create } from 'react-test-renderer';
-import { list } from '../../dummy/DummyData';
+import { dummyList } from '../../dummy/DummyData';
 import Appful from './index';
 
 describe('Appful', () => {
+  const fakeResult = {
+    hits: dummyList,
+    page: 1,
+  };
+
   let container;
 
   beforeEach(() => {
@@ -17,11 +22,6 @@ describe('Appful', () => {
   });
 
   it('should render hits list', async () => {
-    const fakeResult = {
-      hits: list,
-      page: 1,
-    };
-
     jest
       .spyOn(global, 'fetch')
       .mockImplementation(() =>

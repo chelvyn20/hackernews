@@ -1,10 +1,12 @@
 import { func, string, node } from 'prop-types';
+import { useRef } from 'react';
 
 const Search = (props) => {
   const { value, onChange, onSubmit, children } = props;
+  const input = useRef();
   return (
     <form onSubmit={onSubmit}>
-      <input type="text" value={value} onChange={onChange} />
+      <input type="text" value={value} onChange={onChange} ref={input} />
       <button type="submit">{children}</button>
     </form>
   );

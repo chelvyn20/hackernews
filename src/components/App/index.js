@@ -10,6 +10,7 @@ import {
   PATH_SEARCH,
 } from '../../constants';
 import { Button } from '../Button';
+import { Loading } from '../Loading';
 import { Search } from '../Search';
 import { Table } from '../Table';
 import './index.css';
@@ -22,9 +23,10 @@ class App extends Component {
       results: null,
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
+      isLoading: false,
     };
 
-    this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+    this.needsToSearchTopStories = this.needToSearchTopStories.bind(this);
     this.setSearchTopstories = this.setSearchTopstories.bind(this);
     this.fetchSearchTopstories = this.fetchSearchTopstories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -32,39 +34,49 @@ class App extends Component {
     this.onDismiss = this.onDismiss.bind(this);
   }
 
-  needsToSearchTopStories(searchTerm) {
+  needToSearchTopStories(searchTerm) {
     return !this.state.results[searchTerm];
   }
 
   setSearchTopstories(result) {
+    console.log('setSearchTopStories');
     const { hits, page } = result;
     const { searchKey, results } = this.state;
 
     const oldHits =
       results && results[searchKey] ? results[searchKey].hits : [];
+    console.log('oldHits: ' + oldHits);
+
     const updatedHits = [...oldHits, ...hits];
+    console.log('updatedHits: ' + updatedHits);
 
     this.setState({
       results: { ...results, [searchKey]: { hits: updatedHits, page } },
+      isLoading: false,
     });
+    console.log('results: ' + results);
   }
 
-  async fetchSearchTopstories(searchTerm, page) {
-    try {
-      const response = await fetch(
-        `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
-      );
-      const result = await response.json();
-      this.setSearchTopstories(result);
-    } catch (e) {
-      console.log(e.stack);
-      return null;
-    }
+  fetchSearchTopstories(searchTerm, page) {
+    console.log('fetchSearchTopstories');
+    this.setState({ isLoading: true });
+    fetch(
+      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('result: ' + result);
+        this.setSearchTopstories(result);
+      });
   }
 
   componentDidMount() {
+    console.log('componentDidMount');
     const { searchTerm } = this.state;
+    console.log('setSearchKey');
     this.setState({ searchKey: searchTerm });
+    console.log('searchKey: ' + this.state.searchKey);
+    console.log('searchTerm: ' + searchTerm);
     this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
   }
 
@@ -76,10 +88,11 @@ class App extends Component {
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
 
-    if (this.needsToSearchTopStories(searchTerm)) {
+    if (this.needToSearchTopStories(searchTerm)) {
       this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
     }
 
+    console.log('submit');
     event.preventDefault();
   }
 
@@ -96,11 +109,13 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, searchKey } = this.state;
+    const { searchTerm, results, searchKey, isLoading } = this.state;
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
+    console.log('page: ' + page);
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
+    console.log('list: ' + list);
     return (
       <div className="page">
         <div className="interactions">
@@ -114,11 +129,15 @@ class App extends Component {
         </div>
         <Table list={list} onDismiss={this.onDismiss} />
         <div className="interactions">
-          <Button
-            onClick={() => this.fetchSearchTopstories(searchKey, page + 1)}
-          >
-            More
-          </Button>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Button
+              onClick={() => this.fetchSearchTopstories(searchKey, page + 1)}
+            >
+              More
+            </Button>
+          )}
         </div>
       </div>
     );
