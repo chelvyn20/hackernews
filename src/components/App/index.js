@@ -27,8 +27,8 @@ class App extends Component {
     };
 
     this.needsToSearchTopStories = this.needToSearchTopStories.bind(this);
-    this.setSearchTopstories = this.setSearchTopstories.bind(this);
-    this.fetchSearchTopstories = this.fetchSearchTopstories.bind(this);
+    this.setSearchTopStories = this.setSearchTopStories.bind(this);
+    this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
@@ -38,10 +38,11 @@ class App extends Component {
     return !this.state.results[searchTerm];
   }
 
-  setSearchTopstories(result) {
+  setSearchTopStories(result) {
     console.log('setSearchTopStories');
     const { hits, page } = result;
     const { searchKey, results } = this.state;
+    console.log('searchKey in setSearchTopStories: ' + searchKey);
 
     const oldHits =
       results && results[searchKey] ? results[searchKey].hits : [];
@@ -54,11 +55,11 @@ class App extends Component {
       results: { ...results, [searchKey]: { hits: updatedHits, page } },
       isLoading: false,
     });
-    console.log('results: ' + results);
+    // console.log('results: ' + JSON.stringify(results));
   }
 
-  fetchSearchTopstories(searchTerm, page) {
-    console.log('fetchSearchTopstories');
+  fetchSearchTopStories(searchTerm, page) {
+    console.log('fetchSearchTopStories');
     this.setState({ isLoading: true });
     fetch(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
@@ -66,7 +67,7 @@ class App extends Component {
       .then((response) => response.json())
       .then((result) => {
         console.log('result: ' + result);
-        this.setSearchTopstories(result);
+        this.setSearchTopStories(result);
       });
   }
 
@@ -75,9 +76,13 @@ class App extends Component {
     const { searchTerm } = this.state;
     console.log('setSearchKey');
     this.setState({ searchKey: searchTerm });
-    console.log('searchKey: ' + this.state.searchKey);
-    console.log('searchTerm: ' + searchTerm);
-    this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
+    console.log('searchKey in componentDidMount: ' + this.state.searchKey);
+    this.fetchSearchTopStories(searchTerm, DEFAULT_PAGE);
+  }
+
+  componentDidUpdate() {
+    console.log('componentDidUpdate');
+    console.log('searchKey in componentDidUpdate: ' + this.state.searchKey);
   }
 
   onSearchChange(event) {
@@ -89,7 +94,7 @@ class App extends Component {
     this.setState({ searchKey: searchTerm });
 
     if (this.needToSearchTopStories(searchTerm)) {
-      this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
+      this.fetchSearchTopStories(searchTerm, DEFAULT_PAGE);
     }
 
     console.log('submit');
@@ -110,6 +115,8 @@ class App extends Component {
 
   render() {
     const { searchTerm, results, searchKey, isLoading } = this.state;
+    console.log('searchKey: ' + searchKey);
+    // console.log('results: ' + JSON.stringify(results));
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
     console.log('page: ' + page);
@@ -133,7 +140,7 @@ class App extends Component {
             <Loading />
           ) : (
             <Button
-              onClick={() => this.fetchSearchTopstories(searchKey, page + 1)}
+              onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
             >
               More
             </Button>

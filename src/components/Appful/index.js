@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DEFAULT_HPP,
   DEFAULT_PAGE,
@@ -16,61 +16,66 @@ import { Table } from '../Table';
 import './index.css';
 
 function Appful() {
-  const [results, setResults] = useState(null);
-  const [searchKey, setSearchKey] = useState('');
-  const [searchTerm, setSearchTerm] = useState(DEFAULT_QUERY);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(DEFAULT_QUERY);
+  const [searchKey, setSearchKey] = useState('');
+  const [results, setResults] = useState(null);
 
-  const setSearchTopstories = (result) => {
+  const setSearchTopStories = (result) => {
     console.log('setSearchTopStories');
-    const { hits, _page } = result;
+    const { hits, page } = result;
+    console.log('searchKey in setSearchTopStories: ' + searchTerm);
 
     const oldHits =
-      results && results[searchKey] ? results[searchKey].hits : [];
+      results && results[searchTerm] ? results[searchTerm].hits : [];
     console.log('oldHits: ' + oldHits);
 
     const updatedHits = [...oldHits, ...hits];
     console.log('updatedHits: ' + updatedHits);
 
-    setResults({ ...results, [searchKey]: { hits: updatedHits, _page } });
-    console.log('results: ' + results);
+    setResults({ ...results, [searchTerm]: { hits: updatedHits, page: page } });
+    // console.log('results: ' + JSON.stringify(results));
     setIsLoading(false);
   };
 
-  const fetchSearchTopstories = async (_searchTerm, _page) => {
-    console.log('fetchSearchTopstories');
+  const fetchSearchTopStories = async (searchTerm, page) => {
+    console.log('fetchSearchTopStories');
 
     setIsLoading(true);
     const response = await fetch(
-      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${_searchTerm}&${PARAM_PAGE}${_page}&${PARAM_HPP}${DEFAULT_HPP}`
+      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
     );
     const result = await response.json();
     console.log('result: ' + result);
-    setSearchTopstories(result);
+    setSearchTopStories(result);
   };
 
   useEffect(() => {
     console.log('componentDidMount');
     console.log('setSearchKey');
     setSearchKey(searchTerm);
-    console.log('searchKey: ' + searchKey);
-    console.log('searchTerm: ' + searchTerm);
-    fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
+    console.log('searchKey in componentDidMount: ' + searchKey);
+    fetchSearchTopStories(searchTerm, DEFAULT_PAGE);
   }, []);
+
+  useEffect(() => {
+    console.log('componentDidUpdate');
+    console.log('searchKey in componentDidUpdate: ' + searchKey);
+  });
 
   const onSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const needToSearchTopStories = (_searchTerm) => {
-    return !results[_searchTerm];
+  const needToSearchTopStories = (searchTerm) => {
+    return !results[searchTerm];
   };
 
   const onSearchSubmit = (event) => {
     setSearchKey(searchTerm);
 
     if (needToSearchTopStories(searchTerm)) {
-      fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
+      fetchSearchTopStories(searchTerm, DEFAULT_PAGE);
     }
 
     console.log('submit');
@@ -78,14 +83,16 @@ function Appful() {
   };
 
   const onDismiss = (id) => {
-    const { _hits, _page } = results[searchKey];
+    const { hits, page } = results[searchKey];
 
     const isNotId = (item) => item.objectID !== id;
-    const updatedHits = _hits.filter(isNotId);
+    const updatedHits = hits.filter(isNotId);
 
-    setResults({ ...results, [searchKey]: { hits: updatedHits, _page } });
+    setResults({ ...results, [searchKey]: { hits: updatedHits, page: page } });
   };
 
+  console.log('searchKey: ' + searchKey);
+  //   console.log('results: ' + JSON.stringify(results));
   const page = (results && results[searchKey] && results[searchKey].page) || 0;
   console.log('page: ' + page);
   const list = (results && results[searchKey] && results[searchKey].hits) || [];
@@ -107,7 +114,7 @@ function Appful() {
         {isLoading ? (
           <Loading />
         ) : (
-          <Button onClick={() => fetchSearchTopstories(searchKey, page + 1)}>
+          <Button onClick={() => fetchSearchTopStories(searchKey, page + 1)}>
             More
           </Button>
         )}
